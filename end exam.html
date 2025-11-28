@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Notes App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #noteInput {
+      width: 300px;
+      padding: 8px;
+    }
+    button {
+      margin-left: 5px;
+      padding: 8px 12px;
+    }
+    .note {
+      background: #f5f5f5;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Student Notes App</h2>
+
+  <input id="noteInput" type="text" placeholder="Enter your note">
+  <button onclick="addNote()">Add Note</button>
+
+  <h3>Saved Notes</h3>
+  <div id="notesList"></div>
+
+  <script>
+    // Load notes from localStorage
+    function loadNotes() {
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+      let notesList = document.getElementById("notesList");
+      notesList.innerHTML = "";
+
+      notes.forEach((note, index) => {
+        notesList.innerHTML += `
+          <div class="note">
+            <p>${note}</p>
+            <button onclick="editNote(${index})">Edit</button>
+            <button onclick="deleteNote(${index})">Delete</button>
+          </div>
+        `;
+      });
+    }
+
+    // Add new note
+    function addNote() {
+      let noteInput = document.getElementById("noteInput").value;
+
+      if (noteInput.trim() === "") {
+        alert("Please enter a note.");
+        return;
+      }
+
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+      notes.push(noteInput);
+      localStorage.setItem("notes", JSON.stringify(notes));
+
+      document.getElementById("noteInput").value = "";
+      loadNotes();
+    }
+
+    // Edit a note
+    function editNote(index) {
+      let notes = JSON.parse(localStorage.getItem("notes"));
+      let updatedNote = prompt("Edit your note:", notes[index]);
+
+      if (updatedNote !== null) {
+        notes[index] = updatedNote;
+        localStorage.setItem("notes", JSON.stringify(notes));
+        loadNotes();
+      }
+    }
+
+    // Delete a note
+    function deleteNote(index) {
+      let notes = JSON.parse(localStorage.getItem("notes"));
+      notes.splice(index, 1);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      loadNotes();
+    }
+
+    // Initial load
+    loadNotes();
+  </script>
+
+</body>
+</html>
